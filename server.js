@@ -44,8 +44,8 @@ app.use('/api/workers', require('./routes/workers.js'));
 app.use('/api/minerals', require('./routes/minerals.js'));
 app.use('/api/companies', require('./routes/companies.js'));
 app.use('/api/mines', require('./routes/mines.js'));
-//app.use('/api/work_hours', require('./routes/work_hours.js'));
-//app.use('/api/mines', require('./routes/mines.js'));
+app.use('/api/work_hours', require('./routes/work_hours.js'));
+//app.use('/api/mineral_mines', require('./routes/mineral_mines.js'));
 
 app.listen(port, () =>
 {

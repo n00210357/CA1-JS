@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const imageUpload = require('../conifg/image_upload.js')
 
 const 
 {
@@ -13,12 +14,12 @@ const
 } = require('../controllers/worker.controller')
 
 router.get('/', readAll);
-router.post('/register', registor);
+router.post('/register', imageUpload.any('image'), registor);
 router.post('/login', login);
 
 router.get('/:id', loginRequired, readOne);
 
-router.put('/:id', loginRequired, updateData);
+router.put('/:id', imageUpload.any('image'), loginRequired, updateData);
 
 router.delete('/:id', loginRequired, deleteData);
 
