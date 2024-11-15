@@ -212,8 +212,9 @@ const updateData = (req, res) =>
     });
 };
 
-const deleteData = (req, res) => {
-
+//delete a mineral_mine
+const deleteData = (req, res) => 
+{
     let id = req.params.id;
 
     mineral_mine.findById(id)
@@ -225,21 +226,26 @@ const deleteData = (req, res) => {
         }
         else
         {
-            res.status(404).json({
+            res.status(404).json(
+            {
                 "message": `mineral_mine with id: ${id} not found`
             });
         }
     })
     .then(() =>
     {
-        res.status(200).json({
+        res.status(200).json(
+        {
             "message": `mineral_mine with id: ${id} deleted successfully`
         });
     })
-    .catch((err) => {
+    .catch((err) => 
+    {
         console.error(err);
-        if(err.name === 'CastError') {
-            res.status(400).json({
+        if(err.name === 'CastError') 
+        {
+            res.status(400).json(
+            {
                 "message": `Bad request, ${id} is not a valid id`
             });
         }

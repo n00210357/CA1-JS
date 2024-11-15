@@ -227,8 +227,9 @@ const updateData = (req, res) =>
     });
 };
 
-const deleteData = (req, res) => {
-
+//delete a mineral
+const deleteData = (req, res) => 
+{
     let id = req.params.id;
     let filename = '';
 
@@ -242,7 +243,8 @@ const deleteData = (req, res) => {
         }
         else
         {
-            res.status(404).json({
+            res.status(404).json(
+            {
                 "message": `Mineral with id: ${id} not found`
             });
         }
@@ -251,18 +253,23 @@ const deleteData = (req, res) => {
     {
         deleteImage(filename);
 
-        res.status(200).json({
+        res.status(200).json(
+        {
             "message": `Mineral with id: ${id} deleted successfully`
         });
     })
-    .catch((err) => {
+    .catch((err) => 
+    {
         console.error(err);
-        if(err.name === 'CastError') {
-            res.status(400).json({
+        if(err.name === 'CastError') 
+        {
+            res.status(400).json(
+            {
                 "message": `Bad request, ${id} is not a valid id`
             });
         }
-        else {
+        else 
+        {
             res.status(500).json(err)
         } 
     }); 

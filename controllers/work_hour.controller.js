@@ -211,9 +211,9 @@ const updateData = (req, res) =>
     });
 };
 
-//updates a work_hour
-const deleteData = (req, res) => {
-
+//delete a work_hour
+const deleteData = (req, res) => 
+{
     let id = req.params.id;
 
     Work_hour.findById(id)
@@ -225,25 +225,31 @@ const deleteData = (req, res) => {
         }
         else
         {
-            res.status(404).json({
+            res.status(404).json(
+            {
                 "message": `Work_hour with id: ${id} not found`
             });
         }
     })
     .then(() =>
     {
-        res.status(200).json({
+        res.status(200).json(
+        {
             "message": `Work_hour with id: ${id} deleted successfully`
         });
     })
-    .catch((err) => {
+    .catch((err) => 
+    {
         console.error(err);
-        if(err.name === 'CastError') {
-            res.status(400).json({
+        if(err.name === 'CastError') 
+        {
+            res.status(400).json(
+            {
                 "message": `Bad request, ${id} is not a valid id`
             });
         }
-        else {
+        else 
+        {
             res.status(500).json(err)
         } 
     }); 
