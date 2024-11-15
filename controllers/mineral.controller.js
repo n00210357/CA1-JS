@@ -1,9 +1,14 @@
+//connects to needed modules
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+
+//connects to mineral models
 const Mineral = require('../models/mineral.model');
 
+//deletes a saved image
 const deleteImage = async (filename) =>
 {
+    //checks if env links to S3
     if (process.env.STORAGE_ENGINE === 'S3')
     {
         const { S3Client, DeleteObjectCommand } = require('@aws-sdk/client-s3');
@@ -242,6 +247,7 @@ const deleteData = (req, res) => {
     }); 
 };
 
+//exports functions
 module.exports = 
 {
     readAll,

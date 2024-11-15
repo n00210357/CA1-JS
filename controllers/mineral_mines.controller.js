@@ -1,5 +1,8 @@
+//connects to needed modules
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+
+//connects to needed models
 const mineral_mine = require('../models/mineral_mine.model');
 const Mineral = require('../models/mineral.model');
 const Mine = require('../models/mine.model');
@@ -225,6 +228,7 @@ const deleteData = (req, res) => {
     }); 
 };
 
+//exports functions
 module.exports = 
 {
     readAll,

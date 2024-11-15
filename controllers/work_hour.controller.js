@@ -1,5 +1,8 @@
+//connects to needed modules
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+
+//connects to needed models
 const Work_hour = require('../models/work_hour.model');
 const Worker = require('../models/worker.model');
 const Mine = require('../models/mine.model');
@@ -225,6 +228,7 @@ const deleteData = (req, res) => {
     }); 
 };
 
+//exports functions
 module.exports = 
 {
     readAll,

@@ -18,9 +18,6 @@ async function connect()
         console.log("connected");
 
         const db = client.db(database);
-        //const collections = await db.listCollections({}, {nameOnly: true}).toArray();
-        //console.log(collections);
-        //client.close();
 
         return db;
     }
@@ -29,7 +26,5 @@ async function connect()
         console.log(error);
     }
 };
-
-//connect();
 
 module.exports = connect;
