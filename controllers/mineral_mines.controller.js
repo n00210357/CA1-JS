@@ -7,23 +7,30 @@ const mineral_mine = require('../models/mineral_mine.model');
 const Mineral = require('../models/mineral.model');
 const Mine = require('../models/mine.model');
 
-const readData = (req, res) => {
+//reads mineral_mine data
+const readData = (req, res) => 
+{
     mineral_mine.find()
-        .then((data) => {
-            console.log(data);
-            if(data.length > 0){
-                res.status(200).json(data);
-            }
-            else{
-                res.status(404).json("None found");
-            }
-        })
-        .catch((err) => {
-            console.log(err);
-            res.status(500).json(err);
-        });
+    .then((data) => 
+    {
+        console.log(data);
+        if(data.length > 0)
+        {
+            res.status(200).json(data);
+        }
+        else
+        {
+            res.status(404).json("None found");
+        }
+    })
+    .catch((err) => 
+    {
+        console.log(err);
+        res.status(500).json(err);
+    });
 };
 
+//gets all mineral_mines in the database
 const readAll = (req, res) =>
 {
     mineral_mine.find().then(data =>
@@ -45,39 +52,44 @@ const readAll = (req, res) =>
     });
 };
 
-const readOne = (req, res) => {
-
+//gets one mineral_mine in the database
+const readOne = (req, res) => 
+{
     let id = req.params.id;
 
     mineral_mine.findById(id)
-        .then((data) => {
-
-            if(data)
+    .then((data) => 
+    {
+        if(data)
+        {
+            res.status(200).json(data);
+        }
+        else 
+        {
+            res.status(404).json(
             {
-                res.status(200).json(data);
-            }
-            else 
+                "message": `mineral_mine with id: ${id} not found`
+            });
+        }        
+    })
+    .catch((err) => 
+    {
+        console.error(err);
+        if(err.name === 'CastError') 
+        {
+            res.status(400).json(
             {
-                res.status(404).json({
-                    "message": `mineral_mine with id: ${id} not found`
-                });
-            }
-            
-        })
-        .catch((err) => {
-            console.error(err);
-            if(err.name === 'CastError') {
-                res.status(400).json({
-                    "message": `Bad request, ${id} is not a valid id`
-                });
-            }
-            else {
-                res.status(500).json(err)
-            }
-            
-        });
+                "message": `Bad request, ${id} is not a valid id`
+            });
+        }
+        else 
+        {
+            res.status(500).json(err)
+        }            
+    });
 };
 
+//creates a mineral_mine
 const createData = (req, res) =>
 {
     let body = req.body;
@@ -123,8 +135,9 @@ const createData = (req, res) =>
     });
 };
 
-const updateData = (req, res) => {
-
+//updates a mineral_mine
+const updateData = (req, res) => 
+{
     let id = req.params.id;
     let body = req.body;
 
@@ -150,10 +163,12 @@ const updateData = (req, res) => {
             });
         }
     })
-    .then(mineral_mine.findByIdAndUpdate(id, body, {
+    .then(mineral_mine.findByIdAndUpdate(id, body, 
+    {
         new: true
     })
-    .then((data) => {
+    .then((data) => 
+    {
         if(data)
         {
             if (req.file)
@@ -170,25 +185,31 @@ const updateData = (req, res) => {
                 "message": `mineral_mine with id: ${id} not found`
             });
         }        
-        }))
-        .catch((err) => {
-            if(err.name === 'ValidationError'){
-                console.error('Validation Error!!', err);
-                res.status(422).json({
-                    "msg": "Validation Error",
-                    "error" : err.message 
-                });
-            }
-            else if(err.name === 'CastError') {
-                res.status(400).json({
-                    "message": `Bad request, ${id} is not a valid id`
-                });
-            }
-            else {
-                console.error(err);
-                res.status(500).json(err);
-            }
-        });
+    }))
+    .catch((err) => 
+    {
+        if(err.name === 'ValidationError')
+        {
+            console.error('Validation Error!!', err);
+            res.status(422).json(
+            {
+                "msg": "Validation Error",
+                "error" : err.message 
+            });
+        }
+        else if(err.name === 'CastError') 
+        {
+            res.status(400).json(
+            {
+                "message": `Bad request, ${id} is not a valid id`
+            });
+        }
+        else 
+        {
+            console.error(err);
+            res.status(500).json(err);
+        }
+    });
 };
 
 const deleteData = (req, res) => {

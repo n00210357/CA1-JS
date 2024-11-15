@@ -12,6 +12,7 @@ const deleteImage = async (filename) =>
     {
         const { S3Client, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 
+        //checks aws credentials
         const s3 = new S3Client(
         {
             region: process.env.MY_AWS_REGION,
@@ -21,7 +22,7 @@ const deleteImage = async (filename) =>
                 secretAccessKey: process.env.MY_AWS_SECRET_ACCESS_KEY
             }
         });
-
+        //deletes the image from aws
         try
         {
             const data = await s3.send(new DeleteObjectCommand(
@@ -39,16 +40,9 @@ const deleteImage = async (filename) =>
     }
     else
     {
+        //deletes image from uploads folder
         let path = `public/uploads/${filename}`;
-    fs.access(path, fs.constants.F_OK, (err) =>
-    {
-        if (err)
-        {
-            console.error(err);
-            return;
-        }
-
-        fs.unlink(path, err =>
+        fs.access(path, fs.constants.F_OK, (err) =>
         {
             if (err)
             {
@@ -56,29 +50,44 @@ const deleteImage = async (filename) =>
                 return;
             }
 
-            console.log(`${filename} was deleted`);
+            fs.unlink(path, err =>
+            {
+                if (err)
+                {
+                    console.error(err);
+                    return;
+                }
+
+                console.log(`${filename} was deleted`);
+            })
         })
-    })
-}
+    }
 }
 
-const readData = (req, res) => {
+//reads worker data
+const readData = (req, res) => 
+{
     Worker.find()
-        .then((data) => {
-            console.log(data);
-            if(data.length > 0){
-                res.status(200).json(data);
-            }
-            else{
-                res.status(404).json("None found");
-            }
-        })
-        .catch((err) => {
-            console.log(err);
-            res.status(500).json(err);
-        });
+    .then((data) => 
+    {
+        console.log(data);
+        if(data.length > 0)
+        {
+            res.status(200).json(data);
+        }
+        else
+        {
+            res.status(404).json("None found");
+        }
+    })
+    .catch((err) => 
+    {
+        console.log(err);
+        res.status(500).json(err);
+    });
 };
 
+//gets all workers in the database
 const readAll = (req, res) =>
 {
     Worker.find().then(data =>
@@ -100,40 +109,46 @@ const readAll = (req, res) =>
     });
 };
 
-const readOne = (req, res) => {
-
+//gets one worker in the database
+const readOne = (req, res) => 
+{
     let id = req.params.id;
-
     Worker.findById(id)
-        .then((data) => {
-
-            if(data){
-                data.image_path = process.env.IMAGE_URL + data.image_path;
-                res.status(200).json(data);
-            }
-            else {
-                res.status(404).json({
-                    "message": `Worker with id: ${id} not found`
-                });
-            }
-            
-        })
-        .catch((err) => {
-            console.error(err);
-            if(err.name === 'CastError') {
-                res.status(400).json({
-                    "message": `Bad request, ${id} is not a valid id`
-                });
-            }
-            else {
-                res.status(500).json(err)
-            }
-            
-        });
+    .then((data) =>
+    {
+        if(data)
+        {
+            data.image_path = process.env.IMAGE_URL + data.image_path;
+            res.status(200).json(data);
+        }
+        else 
+        {
+            res.status(404).json(
+            {
+            "message": `Worker with id: ${id} not found`
+            });
+        }        
+    })
+    .catch((err) => 
+    {
+        console.error(err);
+        if(err.name === 'CastError') 
+        {
+            res.status(400).json(
+            {
+                "message": `Bad request, ${id} is not a valid id`
+            });
+        }
+        else
+        {
+            res.status(500).json(err)
+        }        
+    });
 };
 
-const updateData = (req, res) => {
-
+//updates a worker
+const updateData = (req, res) => 
+{
     let id = req.params.id;
     let body = req.body;
 
@@ -142,44 +157,52 @@ const updateData = (req, res) => {
         body.image_path = process.env.STORAGE_ENGINE === 'S3' ? req.file.key : req.file.filename;
     }
 
-    Worker.findByIdAndUpdate(id, body, {
+    Worker.findByIdAndUpdate(id, body, 
+    {
         new: true
     })
-        .then((data) => {
-
-            if(data){
-                if (req.file)
-                {
-                    deleteImage(data.filename)
-                }
-
-                res.status(201).json(data);
+    .then((data) => 
+    {
+        if(data)
+        {
+            if (req.file)
+            {
+                deleteImage(data.filename)
             }
-            else {
-                res.status(404).json({
-                    "message": `Worker with id: ${id} not found`
-                });
-            }
-            
-        })
-        .catch((err) => {
-            if(err.name === 'ValidationError'){
-                console.error('Validation Error!!', err);
-                res.status(422).json({
-                    "msg": "Validation Error",
-                    "error" : err.message 
-                });
-            }
-            else if(err.name === 'CastError') {
-                res.status(400).json({
-                    "message": `Bad request, ${id} is not a valid id`
-                });
-            }
-            else {
-                console.error(err);
-                res.status(500).json(err);
-            }
-        });
+        
+            res.status(201).json(data);
+        }
+        else
+        {
+            res.status(404).json(
+            {
+                "message": `Worker with id: ${id} not found`
+            });
+        }            
+    })
+    .catch((err) => 
+    {
+        if(err.name === 'ValidationError')
+        {
+            console.error('Validation Error!!', err);
+            res.status(422).json({
+                "msg": "Validation Error",
+                "error" : err.message 
+            });
+        }
+        else if(err.name === 'CastError') 
+        {
+            res.status(400).json(
+            {
+                "message": `Bad request, ${id} is not a valid id`
+            });
+        }
+        else
+        {
+            console.error(err);
+            res.status(500).json(err);
+        }
+    });
 };
 
 const deleteData = (req, res) => {

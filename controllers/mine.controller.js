@@ -15,6 +15,7 @@ const deleteImage = async (filename) =>
     {
         const { S3Client, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 
+        //checks aws credentials
         const s3 = new S3Client(
         {
             region: process.env.MY_AWS_REGION,
@@ -24,7 +25,7 @@ const deleteImage = async (filename) =>
                 secretAccessKey: process.env.MY_AWS_SECRET_ACCESS_KEY
             }
         });
-
+        //deletes the image from aws
         try
         {
             const data = await s3.send(new DeleteObjectCommand(
@@ -42,16 +43,9 @@ const deleteImage = async (filename) =>
     }
     else
     {
+        //deletes image from uploads folder
         let path = `public/uploads/${filename}`;
-    fs.access(path, fs.constants.F_OK, (err) =>
-    {
-        if (err)
-        {
-            console.error(err);
-            return;
-        }
-
-        fs.unlink(path, err =>
+        fs.access(path, fs.constants.F_OK, (err) =>
         {
             if (err)
             {
@@ -59,29 +53,43 @@ const deleteImage = async (filename) =>
                 return;
             }
 
-            console.log(`${filename} was deleted`);
+            fs.unlink(path, err =>
+            {
+                if (err)
+                {
+                    console.error(err);
+                    return;
+                }
+
+                console.log(`${filename} was deleted`);
+            })
         })
-    })
-}
+    }
 }
 
-const readData = (req, res) => {
+//reads mine data
+const readData = (req, res) => 
+    {
     Mine.find()
-        .then((data) => {
-            console.log(data);
-            if(data.length > 0){
-                res.status(200).json(data);
-            }
-            else{
-                res.status(404).json("None found");
-            }
-        })
-        .catch((err) => {
-            console.log(err);
-            res.status(500).json(err);
-        });
+    .then((data) => 
+    {
+        console.log(data);
+        if(data.length > 0)
+        {
+            res.status(200).json(data);
+        }
+        else
+        {
+            res.status(404).json("None found");
+        }
+    })
+    .catch((err) => {
+        console.log(err);
+        res.status(500).json(err);
+    });
 };
 
+//gets all mines in the database
 const readAll = (req, res) =>
 {
     Mine.find().then(data =>
@@ -103,38 +111,45 @@ const readAll = (req, res) =>
     });
 };
 
-const readOne = (req, res) => {
-
+//gets one mine in the database
+const readOne = (req, res) => 
+{
     let id = req.params.id;
 
     Mine.findById(id)
-        .then((data) => {
-
-            if(data){
-                data.image_path = process.env.IMAGE_URL + data.image_path;
-                res.status(200).json(data);
-            }
-            else {
-                res.status(404).json({
-                    "message": `Mine with id: ${id} not found`
-                });
-            }
-            
-        })
-        .catch((err) => {
-            console.error(err);
-            if(err.name === 'CastError') {
-                res.status(400).json({
-                    "message": `Bad request, ${id} is not a valid id`
-                });
-            }
-            else {
-                res.status(500).json(err)
-            }
-            
-        });
+    .then((data) => 
+    {
+        if(data)
+        {
+            data.image_path = process.env.IMAGE_URL + data.image_path;
+            res.status(200).json(data);
+        }
+        else 
+        {
+            res.status(404).json(
+            {
+                "message": `Mine with id: ${id} not found`
+            });
+        }            
+    })
+    .catch((err) => 
+    {
+        console.error(err);
+        if(err.name === 'CastError') 
+        {
+            res.status(400).json(
+            {
+                "message": `Bad request, ${id} is not a valid id`
+            });
+        }
+        else 
+        {
+            res.status(500).json(err)
+        }            
+    });
 };
 
+//creates a mine
 const createData = (req, res) =>
 {
     let body = req.body;
@@ -180,8 +195,9 @@ const createData = (req, res) =>
     });
 };
 
-const updateData = (req, res) => {
-
+//updates a mine
+const updateData = (req, res) => 
+{
     let id = req.params.id;
     let body = req.body;
 
@@ -212,10 +228,12 @@ const updateData = (req, res) => {
             });
         }
     })
-    .then(Mine.findByIdAndUpdate(id, body, {
+    .then(Mine.findByIdAndUpdate(id, body, 
+    {
         new: true
     })
-    .then((data) => {
+    .then((data) => 
+    {
         if(data)
         {
             if (req.file)
@@ -232,25 +250,31 @@ const updateData = (req, res) => {
                 "message": `Mine with id: ${id} not found`
             });
         }        
-        }))
-        .catch((err) => {
-            if(err.name === 'ValidationError'){
-                console.error('Validation Error!!', err);
-                res.status(422).json({
-                    "msg": "Validation Error",
-                    "error" : err.message 
-                });
-            }
-            else if(err.name === 'CastError') {
-                res.status(400).json({
-                    "message": `Bad request, ${id} is not a valid id`
-                });
-            }
-            else {
-                console.error(err);
-                res.status(500).json(err);
-            }
-        });
+    }))
+    .catch((err) => 
+    {
+        if(err.name === 'ValidationError')
+        {
+            console.error('Validation Error!!', err);
+            res.status(422).json(
+            {
+                "msg": "Validation Error",
+                "error" : err.message 
+            });
+        }
+        else if(err.name === 'CastError') 
+        {
+            res.status(400).json(
+            {
+               "message": `Bad request, ${id} is not a valid id`
+            });
+        }
+        else 
+        {
+            console.error(err);
+            res.status(500).json(err);
+        }
+    });
 };
 
 const deleteData = (req, res) => {
