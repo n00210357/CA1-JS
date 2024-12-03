@@ -8,8 +8,8 @@ const port = 5000;
 
 //connects to the severs required files
 require('dotenv').config();
-require('./conifg/db.js')();
-require('./conifg/image_upload.js');
+require('../conifg/db.js')();
+require('../conifg/image_upload.js');
 
 //sets up the apps type
 app.use(express.json());
@@ -44,12 +44,12 @@ app.use((req, res, next) =>
 });
 
 //connects the routes
-app.use('/api/workers', require('./routes/workers.js'));
-app.use('/api/minerals', require('./routes/minerals.js'));
-app.use('/api/companies', require('./routes/companies.js'));
-app.use('/api/mines', require('./routes/mines.js'));
-app.use('/api/work_hours', require('./routes/work_hours.js'));
-app.use('/api/mineral_mines', require('./routes/mineral_mines.js'));
+app.use('/api/workers', require('../routes/workers.js'));
+app.use('/api/minerals', require('..companies.js'));
+app.use('/api/companies', require('../routes/companies.js'));
+app.use('/api/mines', require('../routes/mines.js'));
+app.use('/api/work_hours', require('../routes/work_hours.js'));
+app.use('/api/mineral_mines', require('../routes/mineral_mines.js'));
 
 //logs the port
 app.listen(port, () =>
