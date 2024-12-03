@@ -4,12 +4,12 @@ const { faker } = require('@faker-js/faker');
 require('dotenv').config();
 
 //models
-const Worker = require('./models/worker.model');
-const Mineral = require('./models/mineral.model');
-const Company = require('./models/company.model');
-const Mine = require('./models/mine.model');
-const Work_hour = require('./models/work_hour.model');
-const Mineral_mine = require('./models/mineral_mine.model');
+const Worker = require('./api/models/worker.model');
+const Mineral = require('./api/models/mineral.model');
+const Company = require('./api/models/company.model');
+const Mine = require('./api/models/mine.model');
+const Work_hour = require('./api/models/work_hour.model');
+const Mineral_mine = require('./api/models/mineral_mine.model');
 
 const connectDB = async () =>
 {
