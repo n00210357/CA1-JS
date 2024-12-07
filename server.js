@@ -20,7 +20,9 @@ app.set('view engine', 'html');
 app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/views/'));
 
-app.use(cors());
+app.use(cors({
+    origin: '*'
+  }));
 
 app.use((req, res, next) => 
 {
