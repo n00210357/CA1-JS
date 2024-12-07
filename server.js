@@ -2,6 +2,7 @@
 const express = require('express');
 const jwt = require('jsonwebtoken')
 const app = express();
+const cors = require('cors');
 
 // chooses the port
 const port = 5000;
@@ -18,6 +19,8 @@ app.set('view engine', 'html');
 //sets up image view
 app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/views/'));
+
+app.use(cors());
 
 app.use((req, res, next) => 
 {
