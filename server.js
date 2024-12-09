@@ -12,6 +12,8 @@ require('dotenv').config();
 require('./conifg/db.js')();
 require('./conifg/image_upload.js');
 
+app.use(cors());
+
 //sets up the apps type
 app.use(express.json());
 app.set('view engine', 'html');
@@ -19,8 +21,6 @@ app.set('view engine', 'html');
 //sets up image view
 app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/views/'));
-
-app.use(cors());
 
 app.use((req, res, next) => 
 {
